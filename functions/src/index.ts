@@ -1,27 +1,58 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import * as admin from "firebase-admin";
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import { onRequest } from "firebase-functions/v2/https";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+admin.initializeApp();
+const db = getFirestore();
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
+export const createUser = onRequest(async (req, res) => {
+  try {
+    if (req.method !== "POST") {
+      res.status(405).send("Method Not Allowed");
+      return;
+    }
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+    const { name, email, age } = req.body as { name?: string; email?: string; age?: number };
+
+    if (!name || !email) {
+      res.status(400).json({ success: false, error: "name and email are required" });
+      return;
+    }
+
+    const docRef = await db.collection("users").add({
+      name,
+      email,
+      age,
+      createdAt: FieldValue.serverTimestamp(),
+    });
+
+    res.status(200).json({ success: true, id: docRef.id });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    const stack = error instanceof Error ? error.stack : undefined;
+    res.status(500).json({
+      success: false,
+      error: message,
+      stack,
+    });
+  }
+});
+
+
+//Snapshot Learning 
+
+export const userCreated = onDocumentCreated("users/{userId}", (event) => {
+    const data = event.data?.data();
+
+    const name = data?.name;
+    const age = data?.age;
+
+    console.log("New user added");
+    console.log("Name :", name);
+    console.log("Age :", age);
+
+    return null;
+});
+

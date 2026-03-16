@@ -1,7 +1,7 @@
-/*
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth as importedAuth, db } from "./firebase.js";
+
+// import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { auth as importedAuth, db } from "./firebase.js";
 
 // async function testAuth() {
 //     const email = `testuser+${Date.now()}@gmail.com`;
@@ -17,33 +17,33 @@ import { auth as importedAuth, db } from "./firebase.js";
 
 // create account / singUp
 
-import { doc, setDoc } from "firebase/firestore";
-export const signUp = async (email: string, password: string) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(
-      importedAuth,
-      email,
-      password,
-    );
+// import { doc, setDoc } from "firebase/firestore";
+// export const signUp = async (email: string, password: string) => {
+//   try {
+//     const userCredential = await createUserWithEmailAndPassword(
+//       importedAuth,
+//       email,
+//       password,
+//     );
 
-    const user = userCredential.user;
+//     const user = userCredential.user;
 
-    await setDoc(doc(db, "users", user.uid), {
-      uid: user.uid,
-      email: user.email,
-      createdAt: new Date(),
-    });
+//     await setDoc(doc(db, "users", user.uid), {
+//       uid: user.uid,
+//       email: user.email,
+//       createdAt: new Date(),
+//     });
 
-    return {
-      uid: user.uid,
-      email: user.email,
-    };
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
-};
+//     return {
+//       uid: user.uid,
+//       email: user.email,
+//     };
+//   } catch (error: any) {
+//     throw new Error(error.message);
+//   }
+// };
 
-signUp("carry@gmail.com", "carry123");
+// signUp("carry@gmail.com", "carry123");
 
 
 // To create another user, change email and run again.
@@ -54,23 +54,23 @@ signUp("carry@gmail.com", "carry123");
 
 // login 
 
-import { signInWithEmailAndPassword } from "firebase/auth";
+// import { signInWithEmailAndPassword } from "firebase/auth";
 
-export async function login(email : string, password: string) {
-    try {
-        const userCredential = await signInWithEmailAndPassword(importedAuth, email, password);
+// export async function login(email : string, password: string) {
+//     try {
+//         const userCredential = await signInWithEmailAndPassword(importedAuth, email, password);
 
-        console.log("User logged in: ", userCredential.user);
-    } catch (error: any) {
-        console.error("Login Error: ",error.message);        
-    }
-}
-
-
-login("alex@gmail.com","alex123");
+//         console.log("User logged in: ", userCredential.user);
+//     } catch (error: any) {
+//         console.error("Login Error: ",error.message);        
+//     }
+// }
 
 
-*/
+// login("alex@gmail.com","alex123");
+
+
+
 import { setDoc } from "firebase/firestore";
 import { auth as importedAuth, db } from "./firebase.js";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -169,11 +169,12 @@ const googleLoginBtn = document.getElementById("login") as HTMLButtonElement;
 async function loginWithGoogle() {
   try {
     const result = await signInWithPopup(importedAuth, provider);
-    console.log("User info: ", result.user);
+    console.log("User info: ", result.user.email);
   } catch (error) {
     console.error(error);
   }
 }
+
 googleLoginBtn.addEventListener("click", loginWithGoogle);
 
 
