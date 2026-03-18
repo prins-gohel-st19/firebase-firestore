@@ -77,38 +77,41 @@ const verification = document.getElementById(
   "verification",
 ) as HTMLButtonElement;
 
-
-// SignUp 
+// SignUp
 
 signupBtn.addEventListener("click", async () => {
-  const email = (document.getElementById("signupEmail") as HTMLInputElement)
-    .value;
-  const password = (
-    document.getElementById("signupPassword") as HTMLInputElement
-  ).value;
+  try {
+    const email = (document.getElementById("signupEmail") as HTMLInputElement)
+      .value;
+    const password = (
+      document.getElementById("signupPassword") as HTMLInputElement
+    ).value;
 
-  const userCredential = await createUserWithEmailAndPassword(
-    importedAuth,
-    email,
-    password,
-  );
+    const userCredential = await createUserWithEmailAndPassword(
+      importedAuth,
+      email,
+      password,
+    );
 
-  const user = userCredential.user;
+    const user = userCredential.user;
 
-  console.log("Sending verification...");
-  await sendEmailVerification(user);
-  console.log("Verification triggered");
+    console.log("Sending verification...");
+    await sendEmailVerification(user);
+    console.log("Verification triggered");
 
-  await setDoc(doc(db, "users", user.uid), {
-    uid: user.uid,
-    email: user.email,
-    createdAt: new Date(),
-  });
-  console.log("User Created");
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      email: user.email,
+      createdAt: new Date(),
+    });
+    console.log("User Created");
+  } catch (error: any) {
+    console.error("Signup Error: ", error.message);
+    alert(error.message);
+  }
 });
 
-
-// Login 
+// Login
 
 loginBtn.addEventListener("click", async () => {
   const email = (document.getElementById("loginEmail") as HTMLInputElement)
@@ -117,7 +120,7 @@ loginBtn.addEventListener("click", async () => {
     document.getElementById("loginPassword") as HTMLInputElement
   ).value;
 
-  if(! email || ! password){
+  if (!email || !password) {
     console.log("Enter the valid details. ");
     alert("Enter valid datails.");
     return;
@@ -129,7 +132,6 @@ loginBtn.addEventListener("click", async () => {
 });
 
 import { addDoc, collection, doc } from "firebase/firestore";
-
 
 //Add Task
 
@@ -143,7 +145,6 @@ addTaskBtn.addEventListener("click", async () => {
 
   console.log("Task Added");
 });
-
 
 //Logout
 
@@ -177,7 +178,7 @@ uploadBtn.addEventListener("click", async () => {
   console.log(`Upload tooks ${(end - start).toFixed(2)} ms`);
   const MAX_SIZE = 5 * 1024;
 
-  if(file.size > MAX_SIZE) {
+  if (file.size > MAX_SIZE) {
     alert("File size should be under 5 KB");
     return;
   }
@@ -203,7 +204,7 @@ async function loginWithGoogle() {
 
 googleLoginBtn.addEventListener("click", loginWithGoogle);
 
-// email verification with link, get link from the TERMIMNAL   
+// email verification with link, get link from the TERMIMNAL
 
 import { sendEmailVerification } from "firebase/auth";
 
@@ -218,13 +219,14 @@ verification.addEventListener("click", async () => {
 
 // password reset
 
-import { getAuth, sendPasswordResetEmail} from "firebase/auth";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 const auth = importedAuth;
 const resetBtn = document.getElementById("resetBtn") as HTMLButtonElement;
 
-resetBtn.addEventListener("click", async() => {
-  const email = (document.getElementById("signupEmail") as HTMLInputElement).value;
+resetBtn.addEventListener("click", async () => {
+  const email = (document.getElementById("signupEmail") as HTMLInputElement)
+    .value;
 
   if (!email) {
     alert("Please enter your email");
@@ -235,12 +237,11 @@ resetBtn.addEventListener("click", async() => {
     await sendPasswordResetEmail(auth, email);
     console.log("Password reset email sent");
     console.log("check your email for pasword reset");
-  } catch (error:any) {
-    console.error("Error ending password reset: ",error);
+  } catch (error: any) {
+    console.error("Error ending password reset: ", error);
     alert(error.message);
   }
 });
-
 
 // file downloads --> Generate temporary URLs
 
@@ -254,5 +255,3 @@ resetBtn.addEventListener("click", async() => {
 // });
 
 // file deletion
-
-

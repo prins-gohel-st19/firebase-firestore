@@ -17,6 +17,21 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
-connectAuthEmulator(auth, "http://127.0.0.1:9099");
-connectFirestoreEmulator(db, "127.0.0.1", 8080);
-connectStorageEmulator(storage, "127.0.0.1", 9199);
+
+// USE_AUTH_EMULATOR = true; means it will run on firebase emulators
+// USE_AUTH_EMULATOR = false; means it will run on firebase console 
+const USE_AUTH_EMULATOR = true;
+const USE_FIRESTORE_EMULATOR = true;
+const USE_STORAGE_EMULATOR = true;
+
+if (USE_AUTH_EMULATOR) {
+  connectAuthEmulator(auth, "http://127.0.0.1:9099");
+}
+
+if (USE_FIRESTORE_EMULATOR) {
+  connectFirestoreEmulator(db, "127.0.0.1", 8080);
+}
+
+if (USE_STORAGE_EMULATOR) {
+  connectStorageEmulator(storage, "127.0.0.1", 9199);
+}

@@ -43,16 +43,16 @@ export const createUser = onRequest(async (req, res) => {
 
 //Snapshot Learning 
 
-export const userCreated = onDocumentCreated("users/{userId}", (event) => {
-    const data = event.data?.data();
+// export const userCreated = onDocumentCreated("users/{userId}", (event) => {
+//     const data = event.data?.data();
 
-    const name = data?.name;
-    const age = data?.age;
+//     const name = data?.name;
+//     const age = data?.age;
 
-    console.log("New user added");
-    console.log("Name :", name);
-    console.log("Age :", age);
+//     console.log("New user added");
+//     console.log("Name :", name);
+//     console.log("Age :", age);
 
-    return null;
-});
+//     return null;
+// });
 
